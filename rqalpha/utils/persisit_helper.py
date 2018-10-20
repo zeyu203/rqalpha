@@ -85,9 +85,9 @@ class PersistHelper(object):
             return True
         return False
 
-    def restore(self):
+    def restore(self, strategy_id = 0):
         for key, obj in six.iteritems(self._objects):
-            state = self._persist_provider.load(key)
+            state = self._persist_provider.load(key, strategy_id)
             system_log.debug('restore {} with state = {}', key, state)
             if not state:
                 continue

@@ -77,6 +77,7 @@ def entry_point():
     :return:
     """
     inject_mod_commands()
+
     """
     run 命令解析
     """
@@ -97,6 +98,7 @@ def update_bundle(data_bundle_path, locale):
 @cli.command()
 @click.help_option('-h', '--help')
 # -- Base Configuration
+@click.option('-i', '--parent-id', 'parent_id', default=0, type=click.INT)
 @click.option('-d', '--data-bundle-path', 'base__data_bundle_path', type=click.Path(exists=True))
 @click.option('-f', '--strategy-file', 'base__strategy_file', type=click.Path(exists=True))
 @click.option('-s', '--start-date', 'base__start_date', type=Date())
@@ -141,7 +143,7 @@ def run(**kwargs):
     cfg = parse_config(kwargs, config_path=config_path, click_type=True, source_code=source_code)
     source_code = cfg.base.source_code
     """
-    运行策略代码
+    执行业务逻辑
     """
     results = main.run(cfg, source_code=source_code)
 

@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import jsonpickle
 import six
 import os
 import pickle
@@ -25,11 +25,11 @@ from enum import Enum
 
 from rqalpha.const import EXIT_CODE, DEFAULT_ACCOUNT_TYPE
 from rqalpha.events import EVENT
-from rqalpha.interface import AbstractMod
+from rqalpha.interface import AbstractMod, Persistable
 from rqalpha.utils.risk import Risk
 
 
-class AnalyserMod(AbstractMod):
+class AnalyserMod(AbstractMod, Persistable):
     def __init__(self):
         self._env = None
         self._mod_config = None
@@ -166,6 +166,26 @@ class AnalyserMod(AbstractMod):
             'order_id': trade.order_id,
             'transaction_cost': trade.transaction_cost,
         }
+
+    def get_state(self):
+        return jsonpickle.encode({
+            'benchmark_daily_returns': self._benchmark_daily_returns,
+            'portfolio_daily_returns' : self._portfolio_daily_returns,
+            'positions' : self._positions,
+            'sub_accounts' : self._sub_accounts,
+            'total_benchmark_portfolios' : self._total_benchmark_portfolios,
+            'total_portfolios' : self._total_portfolios
+        }).encode('utf-8')
+
+    def set_state(self, state):
+        state = state.decode('utf-8')
+        value = jsonpickle.decode(state)
+        self._benchmark_daily_returns = value['benchmark_daily_returns']
+        self._portfolio_daily_returns = value['portfolio_daily_returns']
+        self._positions = value['positions']
+        self._sub_accounts = value['sub_accounts']
+        self._total_benchmark_portfolios = value['total_benchmark_portfolios']
+        self._total_portfolios = value['total_portfolios']
 
     def tear_down(self, code, exception=None):
         if code != EXIT_CODE.EXIT_SUCCESS or not self._enabled:

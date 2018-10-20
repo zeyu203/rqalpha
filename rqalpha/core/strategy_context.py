@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import jsonpickle
 import six
 import pickle
 
@@ -149,16 +149,16 @@ class StrategyContext(object):
             if key.startswith("_"):
                 continue
             try:
-                dict_data[key] = pickle.dumps(value)
+                dict_data[key] = value
             except Exception as e:
                 user_system_log.warn("context.{} can not pickle", key)
-        return pickle.dumps(dict_data)
+        return jsonpickle.encode(dict_data).encode('utf-8')
 
     def set_state(self, state):
-        dict_data = pickle.loads(state)
+        dict_data = jsonpickle.decode(state)
         for key, value in six.iteritems(dict_data):
             try:
-                self.__dict__[key] = pickle.loads(value)
+                self.__dict__[key] = value
                 system_log.debug("restore context.{} {}", key, type(self.__dict__[key]))
             except Exception as e:
                 user_system_log.warn('context.{} can not restore', key)

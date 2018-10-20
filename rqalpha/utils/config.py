@@ -150,6 +150,11 @@ def parse_config(config_args, config_path=None, click_type=False, source_code=No
             if k in conf['whitelist']:
                 deep_update(v, conf[k])
 
+    if 'parent_id' in config_args and config_args['parent_id'] > 0:
+        conf['base']['parent_id'] = config_args['parent_id']
+    else:
+        conf['base']['parent_id'] = 0
+
     mod_configs = config_args.pop('mod_configs', [])
     for k, v in mod_configs:
         key = 'mod__{}'.format(k.replace('.', '__'))
@@ -173,6 +178,7 @@ def parse_config(config_args, config_path=None, click_type=False, source_code=No
                 sub_dict = sub_dict[p]
             sub_dict[key_path[-1]] = v
     else:
+
         """
         将默认参数与配置参数合并
         """

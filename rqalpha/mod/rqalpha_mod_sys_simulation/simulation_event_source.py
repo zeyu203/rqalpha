@@ -109,9 +109,6 @@ class SimulationEventSource(AbstractEventSource):
         else:
             raise NotImplementedError(_("Unsupported market {}".format(self._env.config.base.market)))
 
-    """
-    构建全部事件用于遍历
-    """
     def events(self, start_date, end_date, frequency):
         if frequency == "1d":
             # 根据起始日期和结束日期，获取所有的交易日，然后再循环获取每一个交易日
@@ -119,7 +116,13 @@ class SimulationEventSource(AbstractEventSource):
                 date = day.to_pydatetime()
                 dt_before_trading = date.replace(hour=0, minute=0)
 
+                """
+                获取收盘时间 15:00:00
+                """
                 dt_bar = self._get_day_bar_dt(date)
+                """
+                获取大宗交易停止交易时间 15:30:00
+                """
                 dt_after_trading = self._get_after_trading_dt(date)
 
                 yield Event(EVENT.BEFORE_TRADING, calendar_dt=dt_before_trading, trading_dt=dt_before_trading)

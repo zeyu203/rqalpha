@@ -21,3 +21,18 @@ mod:
     enabled: false
   sys_transaction_cost:
     enabled: true
+  dib_persist: {
+    enabled: false,
+    lib: 'rqalpha.mod.rqalpha_mod_dib_persist',
+    mongo: {
+      host: '192.168.1.170',
+      port: 27017,
+      dbname: dibquant_persist,
+    },
+  }
+  stock_realtime: {
+    enabled: true,
+    lib: 'rqalpha.mod.rqalpha_mod_stock_realtime',
+    redis_uri: '127.0.0.1:6379',
+    persist_path: './persist'
+  }

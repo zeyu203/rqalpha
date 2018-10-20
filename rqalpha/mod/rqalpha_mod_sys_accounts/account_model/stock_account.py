@@ -197,6 +197,9 @@ class StockAccount(BaseAccount):
         order_cost = order.frozen_price * order.quantity if order.side == SIDE.BUY else 0
         return order_cost + Environment.get_instance().get_order_transaction_cost(DEFAULT_ACCOUNT_TYPE.STOCK, order)
 
+    """
+    关闭股息簿
+    """
     def _handle_dividend_book_closure(self, trading_date):
         for order_book_id, position in six.iteritems(self._positions):
             if position.quantity == 0:
